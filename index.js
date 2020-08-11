@@ -3,16 +3,19 @@ const app = express()
 const path = require('path')
 const port = process.env.PORT || 3000
 const mongoose = require('mongoose')
-const User = require('./models/user')
-
-mongoose.Promise = global.Promise
-
 const mongo = process.env.MONGODB || 'mongodb://localhost/autenticacao-autorizacao'
+const User = require('./models/user')
+const noticias = require('./routes/noticias')
+const restrito = require('./routes/restrito')
+mongoose.Promise = global.Promise
 
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'ejs')
 
 app.use(express.static('public'))
+
+app.use('/restrito', restrito)
+app.use('/noticias', noticias)
 
 app.get('/', (req, res) => res.render('index'))
 
