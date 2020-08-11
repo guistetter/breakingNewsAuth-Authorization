@@ -20,4 +20,9 @@ mongoose.connect(mongo, {useMongoClient: true})
   })
   .catch(e => console.log(e))
 
-
+const User = require('./models/user')
+const user = new User({
+ username: 'gui',
+ password: 'abc123'
+})
+user.save(()=> console.log('salvou a senha'))
