@@ -3,7 +3,11 @@ const router = express.Router()
 const Noticia = require('../models/noticia')
 
 router.get('/', async (req, res) => {
-  const noticias = await Noticia.find({category:"public"})
+  let conditions = {}
+  if(!('user' in req.session)){
+    conditions = {category:"public"}
+  }
+  const noticias = await Noticia.find(conditions)
   res.render('noticias/index',{noticias})
 })
 
