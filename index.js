@@ -12,6 +12,7 @@ const User = require('./models/user')
 const noticias = require('./routes/noticias')
 const restrito = require('./routes/restrito')
 const auth = require('./routes/auth')
+const pages = require('./routes/pages')
 
 mongoose.Promise = global.Promise
 
@@ -39,11 +40,11 @@ app.use('/restrito',(req,res, next) => {
   res.redirect('/login') 
 })
 
-app.use('/', auth)
 app.use('/restrito', restrito)
 app.use('/noticias', noticias)
 
-app.get('/', (req, res) => res.render('index'))
+app.use('/', auth)
+app.use('/', pages)
 
 const createInitialUser = async() => {
   const total = await User.count({username: 'gui'})
