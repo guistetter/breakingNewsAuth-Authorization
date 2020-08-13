@@ -2,6 +2,13 @@
 
   <div class="starter-template">
     <h1>Noticias públicas</h1>
+    <table>
+      <tr>
+        <% noticias.forEach( noticia => { %>
+        <td><%= noticia.title%></td>
+      </tr>
+      <% }) %>
+    </table>
     <p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text and a mostly barebones HTML document.</p>
   </div>
  
