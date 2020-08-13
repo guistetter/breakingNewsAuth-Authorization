@@ -2,6 +2,14 @@ const express = require('express')
 const router = express.Router()
 const User = require('../models/user')
 
+//middleware para mosrar usuario logado
+router.use((req,res, next) => {
+  if('user' in req.session){
+    res.locals.user = req.session.user
+  }
+  next()
+})
+
 router.get('/login', (req,res) =>{
   res.render('login')
 })

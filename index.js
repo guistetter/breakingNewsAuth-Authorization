@@ -25,28 +25,11 @@ app.use(express.static('public'))
 app.use(bodyParser.urlencoded({extended:true}))
 app.use(session({secret: 'meu-segredo'}))
 
-//middleware para mosrar usuario logado
-app.use((req,res, next) => {
-  if('user' in req.session){
-    res.locals.user = req.session.user
-  }
-  next()
-})
-
-//interceptar usuario logado ou nao no middleware
-app.use('/restrito',(req,res, next) => {
-  console.log('opa')
-  if('user' in req.session){
-    return next()
-  }
-  res.redirect('/login') 
-})
+app.use('/', auth)
+app.use('/', pages)
 
 app.use('/restrito', restrito)
 app.use('/noticias', noticias)
-
-app.use('/', auth)
-app.use('/', pages)
 
 const createInitialUser = async() => {
   const total = await User.count({username: 'gui'})
@@ -62,19 +45,19 @@ const createInitialUser = async() => {
   }else {
     console.log('Usuario root já existe, criação n é necessario')
   }
-  const noticia = new Noticia({
-    title: "Notícia Pública" +new Date().getTime(),
-    content: 'content',
-    category: 'public'
-  })
-  await noticia.save()
+  // const noticia = new Noticia({
+  //   title: "Notícia Pública" +new Date().getTime(),
+  //   content: 'content',
+  //   category: 'public'
+  // })
+  // await noticia.save()
 
-  const noticia2 = new Noticia({
-    title: "Notícia Privada" +new Date().getTime(),
-    content: 'content',
-    category: 'private'
-  })
-  await noticia2.save()
+  // const noticia2 = new Noticia({
+  //   title: "Notícia Privada" +new Date().getTime(),
+  //   content: 'content',
+  //   category: 'private'
+  // })
+  // await noticia2.save()
 }
 
 mongoose.connect(mongo, {useMongoClient: true})
