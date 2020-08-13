@@ -2,14 +2,16 @@ const express = require('express')
 const session = require('express-session')
 const app = express()
 const path = require('path')
+const bodyParser = require("body-parser")
 const port = process.env.PORT || 3001
 const mongoose = require('mongoose')
 const mongo = process.env.MONGODB || 'mongodb://localhost/autenticacao-autorizacao'
 
 const User = require('./models/user')
+
 const noticias = require('./routes/noticias')
 const restrito = require('./routes/restrito')
-const bodyParser = require("body-parser")
+const auth = require('./routes/auth')
 
 mongoose.Promise = global.Promise
 
@@ -37,25 +39,11 @@ app.use('/restrito',(req,res, next) => {
   res.redirect('/login') 
 })
 
-app.post('/login', async (req,res) => {
-  const user = await User.findOne({username: req.body.username})
-  const isValid = await user.checkPassword(req.body.password)
-  if(isValid){
-    req.session.user = user
-    res.redirect('/restrito/noticias')
-  } else {
-    res.redirect('/login')
-  }
-})
-
+app.use('/', auth)
 app.use('/restrito', restrito)
 app.use('/noticias', noticias)
 
 app.get('/', (req, res) => res.render('index'))
-
-app.get('/login', (req,res) =>{
-  res.render('login')
-})
 
 const createInitialUser = async() => {
   const total = await User.count({username: 'gui'})
