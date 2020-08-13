@@ -2,7 +2,7 @@ const express = require('express')
 const session = require('express-session')
 const app = express()
 const path = require('path')
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 3001
 const mongoose = require('mongoose')
 const mongo = process.env.MONGODB || 'mongodb://localhost/autenticacao-autorizacao'
 
@@ -19,6 +19,15 @@ app.set('view engine', 'ejs')
 app.use(express.static('public'))
 app.use(bodyParser.urlencoded({extended:true}))
 app.use(session({secret: 'meu-segredo'}))
+
+//middleware para mosrar usuario logado
+app.use((req,res, next) => {
+  if('user' in req.session){
+    res.locals.user = req.session.user
+  }
+  next()
+})
+
 //interceptar usuario logado ou nao no middleware
 app.use('/restrito',(req,res, next) => {
   console.log('opa')
