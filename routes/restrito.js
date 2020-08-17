@@ -5,8 +5,8 @@ const Noticia = require('../models/noticia')
 //interceptar usuario logado ou nao no middleware
 router.use((req,res, next) => {
   console.log('opa')
-  if('user' in req.session){
-    if(req.session.user.roles.indexOf('restrito')>=0){
+  if(req.isAuthenticated){
+    if(req.user.roles.indexOf('restrito')>=0){
       return next()
     } else {
       res.redirect('/')
