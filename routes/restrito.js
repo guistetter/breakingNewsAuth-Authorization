@@ -6,7 +6,7 @@ const Noticia = require('../models/noticia')
 router.use((req,res, next) => {
   console.log('opa')
   if('user' in req.session){
-    if(req.session.roles.indexOf('restritro')>0){
+    if(req.session.user.roles.indexOf('restrito')>=0){
       return next()
     } else {
       res.redirect('/')
