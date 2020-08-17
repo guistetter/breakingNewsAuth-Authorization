@@ -32,15 +32,21 @@ app.use('/restrito', restrito)
 app.use('/noticias', noticias)
 
 const createInitialUser = async() => {
-  const total = await User.count({username: 'gui'})
+  const total = await User.count({username: 'user1'})
 
   if( total === 0){
     const user = new User({
-      username: 'gui',
-      password: 'abc123'
+      username: 'user1',
+      password: 'abc123',
+      role:['restrito', 'admin']
       })
-
     await user.save()
+    // const user2 = new User({
+    //   username: 'user2',
+    //   password: 'abc123',
+    //   role:['restrito']
+    //   })
+    // await user2.save()
     console.log('Usuario root criado')
   }else {
     console.log('Usuario root já existe, criação n é necessario')
