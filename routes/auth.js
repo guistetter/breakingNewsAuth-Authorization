@@ -33,8 +33,11 @@ passport.use(new LocalStrategy(async(username, password, done)=>{
 
 //middleware para mosrar usuario logado
 router.use((req,res, next) => {
-  if('user' in req.session){
-    res.locals.user = req.session.user
+  if(req.isAuthenticated()){
+    res.locals.user = req.user
+    if(!req.session.role){
+      req.session.role = req.user.roles[0]
+    }
     res.locals.role = req.session.role
   }
   next()
