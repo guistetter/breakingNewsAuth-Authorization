@@ -2,6 +2,35 @@ const express = require('express')
 const router = express.Router()
 const User = require('../models/user')
 
+const passport = require('passport')
+const LocalStrategy = require('passport-local').Strategy
+
+router.use(passport.initialize())
+router.use(passport.session())
+
+//serialize do passport
+passport.serializeUser((user, done) => {
+  done(null, user)
+})
+passport.deserializeUser((user, done) => {
+  done(null, user)
+})
+
+//definindo a estrategia para login local
+passport.use(new LocalStrategy(async(username, password, done)=>{
+  const user = await User.findOne({username})
+  if(user){
+    const isValid = await user.checkPassword(password)
+    if(isValid){
+      return done(null, user)
+    } else{
+      return done(null, false)
+    }
+  } else {
+    return done(null, false)
+  }
+}))
+
 //middleware para mosrar usuario logado
 router.use((req,res, next) => {
   if('user' in req.session){
@@ -31,21 +60,10 @@ router.get('/logout', (req,res) =>{
   
 })
 
-router.post('/login', async (req,res) => {
-  const user = await User.findOne({username: req.body.username})
-  if(user){
-  const isValid = await user.checkPassword(req.body.password)
-
-  if(isValid){
-    req.session.user = user
-    req.session.role = user.roles[0]
-    res.redirect('/restrito/noticias')
-  } else {
-    res.redirect('/login')
-  }
-} else{
-  res.redirect('/login')
-}
-})
+router.post('/login', passport.authenticate('local', {
+  successRedirect: '/',
+  failureRedirect: '/login',
+  failureFlash: false
+}))
 
 module.exports = router
