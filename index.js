@@ -6,7 +6,7 @@ const bodyParser = require("body-parser")
 const mongoose = require('mongoose')
 
 const mongo = process.env.MONGODB || 'mongodb://localhost/autenticacao-autorizacao'
-const port = process.env.PORT || 4000
+const port = process.env.PORT || 3000
 mongoose.Promise = global.Promise
 
 const User = require('./models/user')
